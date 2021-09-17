@@ -17,31 +17,46 @@ const common_1 = require("@nestjs/common");
 const users_service_1 = require("./users.service");
 const create_user_dto_1 = require("./dto/create-user.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
+const platform_express_1 = require("@nestjs/platform-express");
+const path_1 = require("path");
+const multer_1 = require("multer");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
     }
-    create(createUserDto) {
+    create(createUserDto, avatar) {
+        console.log(avatar);
         return this.usersService.create(createUserDto);
     }
     findAll() {
         return this.usersService.findAll();
     }
     findOne(id) {
-        return this.usersService.findOne(+id);
+        return this.usersService.findOne(id);
     }
     update(id, updateUserDto) {
-        return this.usersService.update(+id, updateUserDto);
+        return this.usersService.update(id, updateUserDto);
     }
     remove(id) {
-        return this.usersService.remove(+id);
+        return this.usersService.remove(id);
     }
 };
 __decorate([
     (0, common_1.Post)(),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('avatar', {
+        storage: (0, multer_1.diskStorage)({
+            destination: (0, path_1.resolve)(__dirname, '..', '..', '..', 'tmp', 'user'),
+            filename: (request, file, callback) => {
+                const fileHash = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                const fileName = `${fileHash}-${file.originalname}`;
+                return callback(null, fileName);
+            },
+        }),
+    })),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
+    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto, Object]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "create", null);
 __decorate([

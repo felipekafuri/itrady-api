@@ -1,4 +1,10 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -7,8 +13,26 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(createUserDto: CreateUserDto) {
+    const userExists = await this.findByEmail(createUserDto.email);
+
+    if (userExists && userExists.email === createUserDto.email) {
+      throw new BadRequestException(
+        `User with email ${userExists.email} already exists.`,
+      );
+    }
+
+    if (userExists && userExists.username === createUserDto.username) {
+      throw new BadRequestException(
+        `User with email ${userExists.username} already exists.`,
+      );
+    }
+
+    const user = await this.prismaService.user.create({
+      data: createUserDto,
+    });
+
+    return user;
   }
 
   findAll() {
@@ -25,6 +49,14 @@ export class UsersService {
     }
 
     return `This action returns a #${id} user`;
+  }
+
+  async findByEmail(email: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: { email },
+    });
+
+    return user;
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {

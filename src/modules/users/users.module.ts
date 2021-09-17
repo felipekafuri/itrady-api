@@ -1,7 +1,11 @@
+import crypto from 'crypto';
+
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UsersController } from './users.controller';
+import { MulterModule } from '@nestjs/platform-express';
+
 import { PrismaService } from '../../database/prisma/prisma.service';
+import { UsersController } from './users.controller';
+import { UsersService } from './users.service';
 
 @Module({
   controllers: [UsersController],

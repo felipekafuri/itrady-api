@@ -4,9 +4,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export declare class UsersService {
     private readonly prismaService;
     constructor(prismaService: PrismaService);
-    create(createUserDto: CreateUserDto): string;
+    create(createUserDto: CreateUserDto): Promise<import(".prisma/client").User>;
     findAll(): import(".prisma/client").PrismaPromise<import(".prisma/client").User[]>;
-    findOne(id: number): string;
-    update(id: number, updateUserDto: UpdateUserDto): string;
-    remove(id: number): string;
+    findOne(id: string): Promise<string>;
+    findByEmail(email: string): Promise<import(".prisma/client").User>;
+    update(id: string, updateUserDto: UpdateUserDto): string;
+    remove(id: string): string;
 }

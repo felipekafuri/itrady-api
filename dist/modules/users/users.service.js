@@ -16,14 +16,36 @@ let UsersService = class UsersService {
     constructor(prismaService) {
         this.prismaService = prismaService;
     }
-    create(createUserDto) {
-        return 'This action adds a new user';
+    async create(createUserDto) {
+        const userExists = await this.findByEmail(createUserDto.email);
+        if (userExists && userExists.email === createUserDto.email) {
+            throw new common_1.BadRequestException(`User with email ${userExists.email} already exists.`);
+        }
+        if (userExists && userExists.username === createUserDto.username) {
+            throw new common_1.BadRequestException(`User with email ${userExists.username} already exists.`);
+        }
+        const user = await this.prismaService.user.create({
+            data: createUserDto,
+        });
+        return user;
     }
     findAll() {
         return this.prismaService.user.findMany();
     }
-    findOne(id) {
+    async findOne(id) {
+        const user = await this.prismaService.user.findUnique({
+            where: { id },
+        });
+        if (!user) {
+            throw new common_1.NotFoundException(`User with id ${id} was not found.`);
+        }
         return `This action returns a #${id} user`;
+    }
+    async findByEmail(email) {
+        const user = await this.prismaService.user.findUnique({
+            where: { email },
+        });
+        return user;
     }
     update(id, updateUserDto) {
         return `This action updates a #${id} user`;
