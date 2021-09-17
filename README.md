@@ -34,3 +34,5 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## LICENSE
+ITrady is published under [BSD 3-Clause](LICENSE).
