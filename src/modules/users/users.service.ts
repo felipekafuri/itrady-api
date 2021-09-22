@@ -36,7 +36,16 @@ export class UsersService {
   }
 
   findAll() {
-    return this.prismaService.user.findMany();
+    return this.prismaService.user.findMany({
+      select: {
+        avatar: true,
+        email: true,
+        id: true,
+        phone_number: true,
+        recommendations: true,
+        username: true,
+      },
+    });
   }
 
   async findOne(id: string) {
@@ -54,6 +63,14 @@ export class UsersService {
   async findByEmail(email: string) {
     const user = await this.prismaService.user.findUnique({
       where: { email },
+    });
+
+    return user;
+  }
+
+  async findByUsername(username: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: { username },
     });
 
     return user;
