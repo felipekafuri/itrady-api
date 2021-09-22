@@ -7,14 +7,21 @@ export declare class UsersController {
     constructor(usersService: UsersService);
     create(createUserDto: CreateUserDto, avatar: Express.Multer.File): Promise<import(".prisma/client").User>;
     findAll(): import(".prisma/client").PrismaPromise<{
-        avatar: string;
         id: string;
         email: string;
         username: string;
+        avatar: string;
         phone_number: string;
         recommendations: number;
     }[]>;
-    findOne(id: string): Promise<string>;
+    findOne(id: string): Promise<{
+        id: string;
+        email: string;
+        username: string;
+        avatar: string;
+        phone_number: string;
+        recommendations: number;
+    }>;
     update(id: string, updateUserDto: UpdateUserDto): string;
     remove(id: string): string;
 }

@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
 const auth_service_1 = require("./modules/auth/auth.service");
 const local_auth_guard_1 = require("./modules/auth/local-auth.guard");
+const public_route_decorator_1 = require("./modules/auth/public-route.decorator");
 let AppController = class AppController {
     constructor(appService, authService) {
         this.appService = appService;
@@ -36,6 +37,7 @@ __decorate([
     __metadata("design:returntype", String)
 ], AppController.prototype, "getHello", null);
 __decorate([
+    (0, public_route_decorator_1.Public)(),
     (0, common_1.UseGuards)(local_auth_guard_1.LocalAuthGuard),
     (0, common_1.Post)('/users/login'),
     __param(0, (0, common_1.Request)()),

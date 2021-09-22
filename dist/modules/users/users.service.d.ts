@@ -13,7 +13,14 @@ export declare class UsersService {
         phone_number: string;
         recommendations: number;
     }[]>;
-    findOne(id: string): Promise<string>;
+    findOne(id: string): Promise<{
+        id: string;
+        email: string;
+        username: string;
+        avatar: string;
+        phone_number: string;
+        recommendations: number;
+    }>;
     findByEmail(email: string): Promise<import(".prisma/client").User>;
     findByUsername(username: string): Promise<import(".prisma/client").User>;
     update(id: string, updateUserDto: UpdateUserDto): string;

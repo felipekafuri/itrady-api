@@ -51,13 +51,21 @@ export class UsersService {
   async findOne(id: string) {
     const user = await this.prismaService.user.findUnique({
       where: { id },
+      select: {
+        avatar: true,
+        email: true,
+        id: true,
+        phone_number: true,
+        recommendations: true,
+        username: true,
+      },
     });
 
     if (!user) {
       throw new NotFoundException(`User with id ${id} was not found.`);
     }
 
-    return `This action returns a #${id} user`;
+    return user;
   }
 
   async findByEmail(email: string) {
