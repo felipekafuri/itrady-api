@@ -15,9 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
-const public_route_decorator_1 = require("./common/public-route.decorator");
+const public_route_decorator_1 = require("./common/decorators/public-route.decorator");
 const auth_service_1 = require("./modules/auth/auth.service");
-const local_auth_guard_1 = require("./modules/auth/local-auth.guard");
+const local_auth_guard_1 = require("./modules/auth/guards/local-auth.guard");
 let AppController = class AppController {
     constructor(appService, authService) {
         this.appService = appService;

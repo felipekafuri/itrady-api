@@ -20,14 +20,18 @@ const update_user_dto_1 = require("./dto/update-user.dto");
 const platform_express_1 = require("@nestjs/platform-express");
 const path_1 = require("path");
 const multer_1 = require("multer");
-const public_route_decorator_1 = require("../../common/public-route.decorator");
+const public_route_decorator_1 = require("../../common/decorators/public-route.decorator");
+const uuid_1 = require("uuid");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
     }
-    create(createUserDto, avatar) {
-        Object.assign(createUserDto, { avatar: avatar.filename });
+    create(createUserDto) {
         return this.usersService.create(createUserDto);
+    }
+    uploadAvatar(id, avatar) {
+        const userAvatar = avatar.filename;
+        return this.usersService.updateAvatar(id, userAvatar);
     }
     findAll() {
         return this.usersService.findAll();
@@ -45,22 +49,29 @@ let UsersController = class UsersController {
 __decorate([
     (0, public_route_decorator_1.Public)(),
     (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "create", null);
+__decorate([
+    (0, public_route_decorator_1.Public)(),
+    (0, common_1.Post)('avatar/:id'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('avatar', {
         storage: (0, multer_1.diskStorage)({
             destination: (0, path_1.resolve)(__dirname, '..', '..', '..', 'tmp', 'user'),
             filename: (request, file, callback) => {
-                const fileHash = Date.now() + '-' + Math.round(Math.random() * 1e9);
-                const fileName = `${fileHash}-${file.originalname}`;
+                const fileName = `${(0, uuid_1.v4)()}-${file.originalname}`;
                 return callback(null, fileName);
             },
         }),
     })),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto, Object]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
-], UsersController.prototype, "create", null);
+], UsersController.prototype, "uploadAvatar", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),

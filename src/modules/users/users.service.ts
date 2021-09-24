@@ -1,10 +1,15 @@
+import { resolve } from 'path';
+
+import { CommonService } from 'src/common/common.service';
+import { PrismaService } from 'src/database/prisma/prisma.service';
+import * as fs from 'fs';
+
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CommonService } from 'src/common/common.service';
-import { PrismaService } from 'src/database/prisma/prisma.service';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -16,17 +21,17 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const userExists = await this.findByEmail(createUserDto.email);
-
-    if (userExists && userExists.email === createUserDto.email) {
+    const emailExists = await this.findByEmail(createUserDto.email);
+    if (emailExists && emailExists.email === createUserDto.email) {
       throw new BadRequestException(
-        `User with email ${userExists.email} already exists.`,
+        `User with email ${emailExists.email} already exists.`,
       );
     }
 
-    if (userExists && userExists.username === createUserDto.username) {
+    const userNameExists = await this.findByUsername(createUserDto.username);
+    if (userNameExists && userNameExists.username === createUserDto.username) {
       throw new BadRequestException(
-        `User with email ${userExists.username} already exists.`,
+        `User with email ${userNameExists.username} already exists.`,
       );
     }
 
@@ -92,8 +97,69 @@ export class UsersService {
     return user;
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async updateAvatar(id: string, avatar: string) {
+    const user = await this.findOne(id);
+
+    if (user.avatar !== '') {
+      const filePath = resolve(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'tmp',
+        `user/${user.avatar}`,
+      );
+      try {
+        await fs.promises.unlink(filePath);
+      } catch {}
+    }
+
+    const updatedUser = await this.prismaService.user.update({
+      where: { id: user.id },
+      data: {
+        avatar,
+      },
+    });
+
+    delete updatedUser.password;
+
+    return updatedUser;
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.findOne(id);
+    // Check if email is already taken
+    if (updateUserDto.email) {
+      const emailExists = await this.findByEmail(updateUserDto.email);
+      if (emailExists && emailExists.email === updateUserDto.email) {
+        throw new BadRequestException(
+          `User with email ${emailExists.email} already exists.`,
+        );
+      }
+    }
+
+    // Check if username is already taken
+    if (updateUserDto.username) {
+      const userNameExists = await this.findByUsername(updateUserDto.username);
+      if (
+        userNameExists &&
+        userNameExists.username === updateUserDto.username
+      ) {
+        throw new BadRequestException(
+          `User with username ${userNameExists.username} already exists.`,
+        );
+      }
+    }
+
+    // Update user
+    const updatedUser = await this.prismaService.user.update({
+      where: { id: user.id },
+      data: updateUserDto,
+    });
+
+    delete updatedUser.password;
+
+    return updatedUser;
   }
 
   async remove(id: string) {

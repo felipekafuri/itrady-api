@@ -4,6 +4,5 @@ export declare class CreateUserDto extends User {
     name: string;
     password: string;
     username: string;
-    avatar: string;
     phone_number: string;
 }

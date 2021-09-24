@@ -25,6 +25,7 @@ export declare class UsersService {
     }>;
     findByEmail(email: string): Promise<import(".prisma/client").User>;
     findByUsername(username: string): Promise<import(".prisma/client").User>;
-    update(id: string, updateUserDto: UpdateUserDto): string;
+    updateAvatar(id: string, avatar: string): Promise<import(".prisma/client").User>;
+    update(id: string, updateUserDto: UpdateUserDto): Promise<import(".prisma/client").User>;
     remove(id: string): Promise<import(".prisma/client").User>;
 }

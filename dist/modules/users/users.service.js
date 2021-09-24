@@ -10,21 +10,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
-const common_1 = require("@nestjs/common");
+const path_1 = require("path");
 const common_service_1 = require("../../common/common.service");
 const prisma_service_1 = require("../../database/prisma/prisma.service");
+const fs = require("fs");
+const common_1 = require("@nestjs/common");
 let UsersService = class UsersService {
     constructor(prismaService, commonService) {
         this.prismaService = prismaService;
         this.commonService = commonService;
     }
     async create(createUserDto) {
-        const userExists = await this.findByEmail(createUserDto.email);
-        if (userExists && userExists.email === createUserDto.email) {
-            throw new common_1.BadRequestException(`User with email ${userExists.email} already exists.`);
+        const emailExists = await this.findByEmail(createUserDto.email);
+        if (emailExists && emailExists.email === createUserDto.email) {
+            throw new common_1.BadRequestException(`User with email ${emailExists.email} already exists.`);
         }
-        if (userExists && userExists.username === createUserDto.username) {
-            throw new common_1.BadRequestException(`User with email ${userExists.username} already exists.`);
+        const userNameExists = await this.findByUsername(createUserDto.username);
+        if (userNameExists && userNameExists.username === createUserDto.username) {
+            throw new common_1.BadRequestException(`User with email ${userNameExists.username} already exists.`);
         }
         createUserDto.password = await this.commonService.hashPassword(createUserDto.password);
         const user = await this.prismaService.user.create({
@@ -74,8 +77,45 @@ let UsersService = class UsersService {
         });
         return user;
     }
-    update(id, updateUserDto) {
-        return `This action updates a #${id} user`;
+    async updateAvatar(id, avatar) {
+        const user = await this.findOne(id);
+        if (user.avatar !== '') {
+            const filePath = (0, path_1.resolve)(__dirname, '..', '..', '..', 'tmp', `user/${user.avatar}`);
+            try {
+                await fs.promises.unlink(filePath);
+            }
+            catch (_a) { }
+        }
+        const updatedUser = await this.prismaService.user.update({
+            where: { id: user.id },
+            data: {
+                avatar,
+            },
+        });
+        delete updatedUser.password;
+        return updatedUser;
+    }
+    async update(id, updateUserDto) {
+        const user = await this.findOne(id);
+        if (updateUserDto.email) {
+            const emailExists = await this.findByEmail(updateUserDto.email);
+            if (emailExists && emailExists.email === updateUserDto.email) {
+                throw new common_1.BadRequestException(`User with email ${emailExists.email} already exists.`);
+            }
+        }
+        if (updateUserDto.username) {
+            const userNameExists = await this.findByUsername(updateUserDto.username);
+            if (userNameExists &&
+                userNameExists.username === updateUserDto.username) {
+                throw new common_1.BadRequestException(`User with username ${userNameExists.username} already exists.`);
+            }
+        }
+        const updatedUser = await this.prismaService.user.update({
+            where: { id: user.id },
+            data: updateUserDto,
+        });
+        delete updatedUser.password;
+        return updatedUser;
     }
     async remove(id) {
         return await this.prismaService.user.delete({

@@ -11,11 +11,11 @@ const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
-const auth_module_1 = require("./modules/auth/auth.module");
-const jwt_auth_guard_1 = require("./modules/auth/jwt-auth.guard");
-const users_module_1 = require("./modules/users/users.module");
-const common_service_1 = require("./common/common.service");
 const common_module_1 = require("./common/common.module");
+const common_service_1 = require("./common/common.service");
+const auth_module_1 = require("./modules/auth/auth.module");
+const jwt_auth_guard_1 = require("./modules/auth/guards/jwt-auth.guard");
+const users_module_1 = require("./modules/users/users.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
