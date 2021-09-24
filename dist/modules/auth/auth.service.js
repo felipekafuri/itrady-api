@@ -33,8 +33,11 @@ let AuthService = class AuthService {
     }
     async validateUser(username, pass) {
         const user = await this.usersService.findByUsername(username);
+        if (!user) {
+            throw new common_1.NotFoundException();
+        }
         const isPasswordValid = await this.commonService.comparePassword(pass, user.password);
-        if (user && isPasswordValid) {
+        if (isPasswordValid) {
             const { password } = user, result = __rest(user, ["password"]);
             return result;
         }
