@@ -17,11 +17,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { resolve } from 'path';
 import { diskStorage } from 'multer';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Public } from 'src/common/public-route.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Public()
   @Post()
   @UseInterceptors(
     FileInterceptor('avatar', {

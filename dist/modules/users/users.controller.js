@@ -20,6 +20,7 @@ const update_user_dto_1 = require("./dto/update-user.dto");
 const platform_express_1 = require("@nestjs/platform-express");
 const path_1 = require("path");
 const multer_1 = require("multer");
+const public_route_decorator_1 = require("../../common/public-route.decorator");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -42,6 +43,7 @@ let UsersController = class UsersController {
     }
 };
 __decorate([
+    (0, public_route_decorator_1.Public)(),
     (0, common_1.Post)(),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('avatar', {
         storage: (0, multer_1.diskStorage)({

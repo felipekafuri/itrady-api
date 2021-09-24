@@ -1,17 +1,19 @@
 import {
   BadRequestException,
-  HttpException,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { CommonService } from 'src/common/common.service';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly commonService: CommonService,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     const userExists = await this.findByEmail(createUserDto.email);
@@ -27,6 +29,10 @@ export class UsersService {
         `User with email ${userExists.username} already exists.`,
       );
     }
+
+    createUserDto.password = await this.commonService.hashPassword(
+      createUserDto.password,
+    );
 
     const user = await this.prismaService.user.create({
       data: createUserDto,
@@ -88,7 +94,9 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    return await this.prismaService.user.delete({
+      where: { id },
+    });
   }
 }
