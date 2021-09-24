@@ -38,6 +38,8 @@ export class UsersService {
       data: createUserDto,
     });
 
+    delete user.password;
+
     return user;
   }
 

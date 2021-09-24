@@ -14,7 +14,7 @@ let CommonService = class CommonService {
         return (0, bcrypt_1.hash)(password, 10);
     }
     async comparePassword(password, hash) {
-        return await (0, bcrypt_1.compare)(password, hash);
+        return (0, bcrypt_1.compare)(password, hash);
     }
 };
 CommonService = __decorate([

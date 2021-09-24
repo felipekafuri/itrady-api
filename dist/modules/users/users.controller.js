@@ -26,7 +26,7 @@ let UsersController = class UsersController {
         this.usersService = usersService;
     }
     create(createUserDto, avatar) {
-        console.log(avatar);
+        Object.assign(createUserDto, { avatar: avatar.filename });
         return this.usersService.create(createUserDto);
     }
     findAll() {

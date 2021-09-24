@@ -8,6 +8,6 @@ export class CommonService {
   }
 
   async comparePassword(password: string, hash: string): Promise<boolean> {
-    return await compare(password, hash);
+    return compare(password, hash);
   }
 }

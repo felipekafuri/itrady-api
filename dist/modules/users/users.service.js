@@ -30,6 +30,7 @@ let UsersService = class UsersService {
         const user = await this.prismaService.user.create({
             data: createUserDto,
         });
+        delete user.password;
         return user;
     }
     findAll() {
