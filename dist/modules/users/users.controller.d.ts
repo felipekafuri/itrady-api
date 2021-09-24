@@ -6,8 +6,22 @@ export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
     create(createUserDto: CreateUserDto, avatar: Express.Multer.File): Promise<import(".prisma/client").User>;
-    findAll(): import(".prisma/client").PrismaPromise<import(".prisma/client").User[]>;
-    findOne(id: string): Promise<string>;
+    findAll(): import(".prisma/client").PrismaPromise<{
+        id: string;
+        email: string;
+        username: string;
+        avatar: string;
+        phone_number: string;
+        recommendations: number;
+    }[]>;
+    findOne(id: string): Promise<{
+        id: string;
+        email: string;
+        username: string;
+        avatar: string;
+        phone_number: string;
+        recommendations: number;
+    }>;
     update(id: string, updateUserDto: UpdateUserDto): string;
-    remove(id: string): string;
+    remove(id: string): Promise<import(".prisma/client").User>;
 }

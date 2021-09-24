@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,11 +16,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { resolve } from 'path';
 import { diskStorage } from 'multer';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Public } from 'src/common/public-route.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Public()
   @Post()
   @UseInterceptors(
     FileInterceptor('avatar', {
@@ -38,7 +42,7 @@ export class UsersController {
     @Body() createUserDto: CreateUserDto,
     @UploadedFile() avatar: Express.Multer.File,
   ) {
-    console.log(avatar);
+    Object.assign(createUserDto, { avatar: avatar.filename });
     return this.usersService.create(createUserDto);
   }
 

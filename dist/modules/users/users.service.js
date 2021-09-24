@@ -11,10 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
+const common_service_1 = require("../../common/common.service");
 const prisma_service_1 = require("../../database/prisma/prisma.service");
 let UsersService = class UsersService {
-    constructor(prismaService) {
+    constructor(prismaService, commonService) {
         this.prismaService = prismaService;
+        this.commonService = commonService;
     }
     async create(createUserDto) {
         const userExists = await this.findByEmail(createUserDto.email);
@@ -24,22 +26,41 @@ let UsersService = class UsersService {
         if (userExists && userExists.username === createUserDto.username) {
             throw new common_1.BadRequestException(`User with email ${userExists.username} already exists.`);
         }
+        createUserDto.password = await this.commonService.hashPassword(createUserDto.password);
         const user = await this.prismaService.user.create({
             data: createUserDto,
         });
+        delete user.password;
         return user;
     }
     findAll() {
-        return this.prismaService.user.findMany();
+        return this.prismaService.user.findMany({
+            select: {
+                avatar: true,
+                email: true,
+                id: true,
+                phone_number: true,
+                recommendations: true,
+                username: true,
+            },
+        });
     }
     async findOne(id) {
         const user = await this.prismaService.user.findUnique({
             where: { id },
+            select: {
+                avatar: true,
+                email: true,
+                id: true,
+                phone_number: true,
+                recommendations: true,
+                username: true,
+            },
         });
         if (!user) {
             throw new common_1.NotFoundException(`User with id ${id} was not found.`);
         }
-        return `This action returns a #${id} user`;
+        return user;
     }
     async findByEmail(email) {
         const user = await this.prismaService.user.findUnique({
@@ -47,16 +68,25 @@ let UsersService = class UsersService {
         });
         return user;
     }
+    async findByUsername(username) {
+        const user = await this.prismaService.user.findUnique({
+            where: { username },
+        });
+        return user;
+    }
     update(id, updateUserDto) {
         return `This action updates a #${id} user`;
     }
-    remove(id) {
-        return `This action removes a #${id} user`;
+    async remove(id) {
+        return await this.prismaService.user.delete({
+            where: { id },
+        });
     }
 };
 UsersService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        common_service_1.CommonService])
 ], UsersService);
 exports.UsersService = UsersService;
 //# sourceMappingURL=users.service.js.map
