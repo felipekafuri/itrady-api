@@ -10,10 +10,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
-const fs_1 = require("fs");
 const path_1 = require("path");
 const common_service_1 = require("../../common/common.service");
 const prisma_service_1 = require("../../database/prisma/prisma.service");
+const fs = require("fs");
 const common_1 = require("@nestjs/common");
 let UsersService = class UsersService {
     constructor(prismaService, commonService) {
@@ -21,12 +21,13 @@ let UsersService = class UsersService {
         this.commonService = commonService;
     }
     async create(createUserDto) {
-        const userExists = await this.findByEmail(createUserDto.email);
-        if (userExists && userExists.email === createUserDto.email) {
-            throw new common_1.BadRequestException(`User with email ${userExists.email} already exists.`);
+        const emailExists = await this.findByEmail(createUserDto.email);
+        if (emailExists && emailExists.email === createUserDto.email) {
+            throw new common_1.BadRequestException(`User with email ${emailExists.email} already exists.`);
         }
-        if (userExists && userExists.username === createUserDto.username) {
-            throw new common_1.BadRequestException(`User with email ${userExists.username} already exists.`);
+        const userNameExists = await this.findByUsername(createUserDto.username);
+        if (userNameExists && userNameExists.username === createUserDto.username) {
+            throw new common_1.BadRequestException(`User with email ${userNameExists.username} already exists.`);
         }
         createUserDto.password = await this.commonService.hashPassword(createUserDto.password);
         const user = await this.prismaService.user.create({
@@ -81,8 +82,7 @@ let UsersService = class UsersService {
         if (user.avatar !== '') {
             const filePath = (0, path_1.resolve)(__dirname, '..', '..', '..', 'tmp', `user/${user.avatar}`);
             try {
-                console.log(filePath);
-                await fs_1.default.promises.stat(filePath);
+                await fs.promises.unlink(filePath);
             }
             catch (_a) { }
         }
@@ -97,6 +97,19 @@ let UsersService = class UsersService {
     }
     async update(id, updateUserDto) {
         const user = await this.findOne(id);
+        if (updateUserDto.email) {
+            const emailExists = await this.findByEmail(updateUserDto.email);
+            if (emailExists && emailExists.email === updateUserDto.email) {
+                throw new common_1.BadRequestException(`User with email ${emailExists.email} already exists.`);
+            }
+        }
+        if (updateUserDto.username) {
+            const userNameExists = await this.findByUsername(updateUserDto.username);
+            if (userNameExists &&
+                userNameExists.username === updateUserDto.username) {
+                throw new common_1.BadRequestException(`User with username ${userNameExists.username} already exists.`);
+            }
+        }
         const updatedUser = await this.prismaService.user.update({
             where: { id: user.id },
             data: updateUserDto,
