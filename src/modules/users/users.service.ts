@@ -1,10 +1,14 @@
+import fs from 'fs';
+import { resolve } from 'path';
+import { CommonService } from 'src/common/common.service';
+import { PrismaService } from 'src/database/prisma/prisma.service';
+
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CommonService } from 'src/common/common.service';
-import { PrismaService } from 'src/database/prisma/prisma.service';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -92,8 +96,48 @@ export class UsersService {
     return user;
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async updateAvatar(id: string, avatar: string) {
+    const user = await this.findOne(id);
+
+    if (user.avatar !== '') {
+      const filePath = resolve(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'tmp',
+        `user/${user.avatar}`,
+      );
+
+      try {
+        console.log(filePath);
+        await fs.promises.stat(filePath);
+      } catch {}
+    }
+
+    const updatedUser = await this.prismaService.user.update({
+      where: { id: user.id },
+      data: {
+        avatar,
+      },
+    });
+
+    delete updatedUser.password;
+
+    return updatedUser;
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.findOne(id);
+
+    const updatedUser = await this.prismaService.user.update({
+      where: { id: user.id },
+      data: updateUserDto,
+    });
+
+    delete updatedUser.password;
+
+    return updatedUser;
   }
 
   async remove(id: string) {

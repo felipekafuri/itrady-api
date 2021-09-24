@@ -15,8 +15,6 @@ export class CreateUserDto extends User {
   @IsString()
   username: string;
 
-  avatar: string;
-
   @IsString()
   phone_number: string;
 }

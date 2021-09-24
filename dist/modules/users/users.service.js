@@ -10,9 +10,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
-const common_1 = require("@nestjs/common");
+const fs_1 = require("fs");
+const path_1 = require("path");
 const common_service_1 = require("../../common/common.service");
 const prisma_service_1 = require("../../database/prisma/prisma.service");
+const common_1 = require("@nestjs/common");
 let UsersService = class UsersService {
     constructor(prismaService, commonService) {
         this.prismaService = prismaService;
@@ -74,8 +76,33 @@ let UsersService = class UsersService {
         });
         return user;
     }
-    update(id, updateUserDto) {
-        return `This action updates a #${id} user`;
+    async updateAvatar(id, avatar) {
+        const user = await this.findOne(id);
+        if (user.avatar !== '') {
+            const filePath = (0, path_1.resolve)(__dirname, '..', '..', '..', 'tmp', `user/${user.avatar}`);
+            try {
+                console.log(filePath);
+                await fs_1.default.promises.stat(filePath);
+            }
+            catch (_a) { }
+        }
+        const updatedUser = await this.prismaService.user.update({
+            where: { id: user.id },
+            data: {
+                avatar,
+            },
+        });
+        delete updatedUser.password;
+        return updatedUser;
+    }
+    async update(id, updateUserDto) {
+        const user = await this.findOne(id);
+        const updatedUser = await this.prismaService.user.update({
+            where: { id: user.id },
+            data: updateUserDto,
+        });
+        delete updatedUser.password;
+        return updatedUser;
     }
     async remove(id) {
         return await this.prismaService.user.delete({

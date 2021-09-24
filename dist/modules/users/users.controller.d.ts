@@ -5,7 +5,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
-    create(createUserDto: CreateUserDto, avatar: Express.Multer.File): Promise<import(".prisma/client").User>;
+    create(createUserDto: CreateUserDto): Promise<import(".prisma/client").User>;
+    uploadAvatar(id: string, avatar: Express.Multer.File): Promise<import(".prisma/client").User>;
     findAll(): import(".prisma/client").PrismaPromise<{
         id: string;
         email: string;
@@ -22,6 +23,6 @@ export declare class UsersController {
         phone_number: string;
         recommendations: number;
     }>;
-    update(id: string, updateUserDto: UpdateUserDto): string;
+    update(id: string, updateUserDto: UpdateUserDto): Promise<import(".prisma/client").User>;
     remove(id: string): Promise<import(".prisma/client").User>;
 }

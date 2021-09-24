@@ -16,8 +16,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { resolve } from 'path';
 import { diskStorage } from 'multer';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { Public } from 'src/common/public-route.decorator';
+import { Public } from '../../common/decorators/public-route.decorator';
+import { v4 } from 'uuid';
 
 @Controller('users')
 export class UsersController {
@@ -25,25 +25,30 @@ export class UsersController {
 
   @Public()
   @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
+  }
+
+  @Public()
+  @Post('avatar/:id')
   @UseInterceptors(
     FileInterceptor('avatar', {
       storage: diskStorage({
         destination: resolve(__dirname, '..', '..', '..', 'tmp', 'user'),
         filename: (request, file, callback) => {
-          const fileHash = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const fileName = `${fileHash}-${file.originalname}`;
+          const fileName = `${v4()}-${file.originalname}`;
 
           return callback(null, fileName);
         },
       }),
     }),
   )
-  create(
-    @Body() createUserDto: CreateUserDto,
+  uploadAvatar(
+    @Param('id') id: string,
     @UploadedFile() avatar: Express.Multer.File,
   ) {
-    Object.assign(createUserDto, { avatar: avatar.filename });
-    return this.usersService.create(createUserDto);
+    const userAvatar = avatar.filename;
+    return this.usersService.updateAvatar(id, userAvatar);
   }
 
   @Get()
