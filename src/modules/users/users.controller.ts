@@ -8,7 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
-  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -18,6 +18,12 @@ import { resolve } from 'path';
 import { diskStorage } from 'multer';
 import { Public } from '../../common/decorators/public-route.decorator';
 import { v4 } from 'uuid';
+
+type RequestType = {
+  user: {
+    userId: string;
+  };
+};
 
 @Controller('users')
 export class UsersController {
@@ -69,5 +75,13 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  @Post('/recommend/:id')
+  recommendUser(@Param('id') id: string, @Request() req: RequestType) {
+    return this.usersService.recommendUser({
+      recommended_user_id: id,
+      user_id: req.user.userId,
+    });
   }
 }

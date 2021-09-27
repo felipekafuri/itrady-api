@@ -20,3 +20,11 @@ model User {
   phone_number    String
   recommendations Int    @default(0)
 }
+
+model Event {
+  id      String   @id @default(uuid())
+  name    String
+  type    String
+  date    DateTime
+  payload Json
+}
