@@ -6,12 +6,19 @@ import * as fs from 'fs';
 
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+
+interface UserRecommendation {
+  recommended_user_id: string;
+  user_id: string;
+}
 
 @Injectable()
 export class UsersService {
@@ -166,5 +173,37 @@ export class UsersService {
     return await this.prismaService.user.delete({
       where: { id },
     });
+  }
+
+  async recommendUser({ recommended_user_id, user_id }: UserRecommendation) {
+    const user = await this.findOne(recommended_user_id);
+
+    if (recommended_user_id === user_id) {
+      throw new ForbiddenException('User cannot recommend itself');
+    }
+
+    const payload = {
+      recommended_user_id: user.id,
+      user_id: user_id,
+    };
+
+    const recommendEvent = await this.prismaService.$transaction([
+      this.prismaService.event.create({
+        data: {
+          name: 'recommend_user',
+          type: 'user',
+          payload,
+          date: new Date(),
+        },
+      }),
+      this.prismaService.user.update({
+        where: { id: user.id },
+        data: {
+          recommendations: user.recommendations + 1,
+        },
+      }),
+    ]);
+
+    return recommendEvent;
   }
 }
