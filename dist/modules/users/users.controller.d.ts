@@ -2,11 +2,11 @@
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-declare type RequestType = {
+interface RequestType extends Request {
     user: {
         userId: string;
     };
-};
+}
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
@@ -29,7 +29,7 @@ export declare class UsersController {
         recommendations: number;
     }>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<import(".prisma/client").User>;
-    remove(id: string): Promise<import(".prisma/client").User>;
+    remove(req: RequestType): Promise<import(".prisma/client").User>;
     recommendUser(id: string, req: RequestType): Promise<[import(".prisma/client").Event, import(".prisma/client").User]>;
 }
 export {};

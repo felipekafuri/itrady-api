@@ -42,8 +42,8 @@ let UsersController = class UsersController {
     update(id, updateUserDto) {
         return this.usersService.update(id, updateUserDto);
     }
-    remove(id) {
-        return this.usersService.remove(id);
+    remove(req) {
+        return this.usersService.remove(req.user.userId);
     }
     recommendUser(id, req) {
         return this.usersService.recommendUser({
@@ -100,10 +100,10 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "update", null);
 __decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Delete)(),
+    __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "remove", null);
 __decorate([

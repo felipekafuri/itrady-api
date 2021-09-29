@@ -19,11 +19,11 @@ import { diskStorage } from 'multer';
 import { Public } from '../../common/decorators/public-route.decorator';
 import { v4 } from 'uuid';
 
-type RequestType = {
+interface RequestType extends Request {
   user: {
     userId: string;
   };
-};
+}
 
 @Controller('users')
 export class UsersController {
@@ -72,9 +72,9 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  @Delete()
+  remove(@Request() req: RequestType) {
+    return this.usersService.remove(req.user.userId);
   }
 
   @Post('/recommend/:id')
