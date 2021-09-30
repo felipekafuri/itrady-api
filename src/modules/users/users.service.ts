@@ -14,6 +14,7 @@ import {
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { MailService } from '../mail/mail.service';
 
 interface UserRecommendation {
   recommended_user_id: string;
@@ -25,6 +26,7 @@ export class UsersService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly commonService: CommonService,
+    private readonly mailService: MailService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -205,5 +207,35 @@ export class UsersService {
     ]);
 
     return recommendEvent;
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.findByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const templateDir = resolve(
+      __dirname,
+      '..',
+      'mail',
+      'templates',
+      'forgot_password.hbs',
+    );
+
+    await this.mailService.sendMail({
+      subject: 'Esqueceu senha',
+      templateData: {
+        file: templateDir,
+        variables: {
+          name: user.name,
+        },
+      },
+      to: {
+        name: user.name,
+        email,
+      },
+    });
   }
 }

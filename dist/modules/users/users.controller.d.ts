@@ -31,5 +31,8 @@ export declare class UsersController {
     update(id: string, updateUserDto: UpdateUserDto): Promise<import(".prisma/client").User>;
     remove(req: RequestType): Promise<import(".prisma/client").User>;
     recommendUser(id: string, req: RequestType): Promise<[import(".prisma/client").Event, import(".prisma/client").User]>;
+    forgotPassword(body: {
+        email: string;
+    }): Promise<void>;
 }
 export {};

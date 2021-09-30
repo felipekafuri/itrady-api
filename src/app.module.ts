@@ -8,9 +8,21 @@ import { CommonService } from './common/common.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { UsersModule } from './modules/users/users.module';
+import { MailModule } from './modules/mail/mail.module';
+import { ConfigModule } from '@nestjs/config';
+import appConfig from './config/app.config';
 
 @Module({
-  imports: [UsersModule, AuthModule, CommonModule],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: ['.env.development'],
+      load: [appConfig],
+    }),
+    UsersModule,
+    AuthModule,
+    CommonModule,
+    MailModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

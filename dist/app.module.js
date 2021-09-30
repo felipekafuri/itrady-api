@@ -16,11 +16,23 @@ const common_service_1 = require("./common/common.service");
 const auth_module_1 = require("./modules/auth/auth.module");
 const jwt_auth_guard_1 = require("./modules/auth/guards/jwt-auth.guard");
 const users_module_1 = require("./modules/users/users.module");
+const mail_module_1 = require("./modules/mail/mail.module");
+const config_1 = require("@nestjs/config");
+const app_config_1 = require("./config/app.config");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [users_module_1.UsersModule, auth_module_1.AuthModule, common_module_1.CommonModule],
+        imports: [
+            config_1.ConfigModule.forRoot({
+                envFilePath: ['.env.development'],
+                load: [app_config_1.default],
+            }),
+            users_module_1.UsersModule,
+            auth_module_1.AuthModule,
+            common_module_1.CommonModule,
+            mail_module_1.MailModule,
+        ],
         controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,

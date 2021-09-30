@@ -51,6 +51,9 @@ let UsersController = class UsersController {
             user_id: req.user.userId,
         });
     }
+    forgotPassword(body) {
+        return this.usersService.forgotPassword(body.email);
+    }
 };
 __decorate([
     (0, public_route_decorator_1.Public)(),
@@ -114,6 +117,14 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "recommendUser", null);
+__decorate([
+    (0, public_route_decorator_1.Public)(),
+    (0, common_1.Post)('/forgot-password'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "forgotPassword", null);
 UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

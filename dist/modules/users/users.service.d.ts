@@ -2,6 +2,7 @@ import { CommonService } from 'src/common/common.service';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { MailService } from '../mail/mail.service';
 interface UserRecommendation {
     recommended_user_id: string;
     user_id: string;
@@ -9,7 +10,8 @@ interface UserRecommendation {
 export declare class UsersService {
     private readonly prismaService;
     private readonly commonService;
-    constructor(prismaService: PrismaService, commonService: CommonService);
+    private readonly mailService;
+    constructor(prismaService: PrismaService, commonService: CommonService, mailService: MailService);
     create(createUserDto: CreateUserDto): Promise<import(".prisma/client").User>;
     findAll(): import(".prisma/client").PrismaPromise<{
         id: string;
@@ -33,5 +35,6 @@ export declare class UsersService {
     update(id: string, updateUserDto: UpdateUserDto): Promise<import(".prisma/client").User>;
     remove(id: string): Promise<import(".prisma/client").User>;
     recommendUser({ recommended_user_id, user_id }: UserRecommendation): Promise<[import(".prisma/client").Event, import(".prisma/client").User]>;
+    forgotPassword(email: string): Promise<void>;
 }
 export {};

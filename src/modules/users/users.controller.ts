@@ -84,4 +84,10 @@ export class UsersController {
       user_id: req.user.userId,
     });
   }
+
+  @Public()
+  @Post('/forgot-password')
+  forgotPassword(@Body() body: { email: string }) {
+    return this.usersService.forgotPassword(body.email);
+  }
 }
