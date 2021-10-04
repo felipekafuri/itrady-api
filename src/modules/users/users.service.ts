@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 
-import { CommonService } from 'src/common/common.service';
-import { PrismaService } from 'src/database/prisma/prisma.service';
+import { CommonService } from '../../common/common.service';
+import { PrismaService } from '../../database/prisma/prisma.service';
 import * as fs from 'fs';
 
 import {
@@ -9,12 +9,12 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MailService } from '../mail/mail.service';
+import { UsersTokensService } from '../users-tokens/users-tokens.service';
 
 interface UserRecommendation {
   recommended_user_id: string;
@@ -27,6 +27,7 @@ export class UsersService {
     private readonly prismaService: PrismaService,
     private readonly commonService: CommonService,
     private readonly mailService: MailService,
+    private readonly userTokenService: UsersTokensService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -224,12 +225,15 @@ export class UsersService {
       'forgot_password.hbs',
     );
 
+    const token = await this.userTokenService.create(user.id);
+
     await this.mailService.sendMail({
       subject: 'Esqueceu senha',
       templateData: {
         file: templateDir,
         variables: {
           name: user.name,
+          link: `${process.env.APP_URL}/reset-password/${token.token}`,
         },
       },
       to: {

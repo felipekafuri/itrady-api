@@ -1,8 +1,9 @@
-import { CommonService } from 'src/common/common.service';
-import { PrismaService } from 'src/database/prisma/prisma.service';
+import { CommonService } from '../../common/common.service';
+import { PrismaService } from '../../database/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MailService } from '../mail/mail.service';
+import { UsersTokensService } from '../users-tokens/users-tokens.service';
 interface UserRecommendation {
     recommended_user_id: string;
     user_id: string;
@@ -11,7 +12,8 @@ export declare class UsersService {
     private readonly prismaService;
     private readonly commonService;
     private readonly mailService;
-    constructor(prismaService: PrismaService, commonService: CommonService, mailService: MailService);
+    private readonly userTokenService;
+    constructor(prismaService: PrismaService, commonService: CommonService, mailService: MailService, userTokenService: UsersTokensService);
     create(createUserDto: CreateUserDto): Promise<import(".prisma/client").User>;
     findAll(): import(".prisma/client").PrismaPromise<{
         id: string;

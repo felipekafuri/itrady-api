@@ -6,23 +6,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersModule = void 0;
+exports.UsersTokensModule = void 0;
 const common_1 = require("@nestjs/common");
-const common_module_1 = require("../../common/common.module");
 const prisma_service_1 = require("../../database/prisma/prisma.service");
-const mail_module_1 = require("../mail/mail.module");
-const users_tokens_module_1 = require("../users-tokens/users-tokens.module");
-const users_controller_1 = require("./users.controller");
-const users_service_1 = require("./users.service");
-let UsersModule = class UsersModule {
+const users_tokens_service_1 = require("./users-tokens.service");
+let UsersTokensModule = class UsersTokensModule {
 };
-UsersModule = __decorate([
+UsersTokensModule = __decorate([
     (0, common_1.Module)({
-        imports: [common_module_1.CommonModule, mail_module_1.MailModule, users_tokens_module_1.UsersTokensModule],
-        controllers: [users_controller_1.UsersController],
-        providers: [users_service_1.UsersService, prisma_service_1.PrismaService],
-        exports: [users_service_1.UsersService],
+        providers: [users_tokens_service_1.UsersTokensService, prisma_service_1.PrismaService],
+        exports: [users_tokens_service_1.UsersTokensService],
     })
-], UsersModule);
-exports.UsersModule = UsersModule;
-//# sourceMappingURL=users.module.js.map
+], UsersTokensModule);
+exports.UsersTokensModule = UsersTokensModule;
+//# sourceMappingURL=users-tokens.module.js.map

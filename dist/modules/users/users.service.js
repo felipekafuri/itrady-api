@@ -16,11 +16,13 @@ const prisma_service_1 = require("../../database/prisma/prisma.service");
 const fs = require("fs");
 const common_1 = require("@nestjs/common");
 const mail_service_1 = require("../mail/mail.service");
+const users_tokens_service_1 = require("../users-tokens/users-tokens.service");
 let UsersService = class UsersService {
-    constructor(prismaService, commonService, mailService) {
+    constructor(prismaService, commonService, mailService, userTokenService) {
         this.prismaService = prismaService;
         this.commonService = commonService;
         this.mailService = mailService;
+        this.userTokenService = userTokenService;
     }
     async create(createUserDto) {
         const emailExists = await this.findByEmail(createUserDto.email);
@@ -157,12 +159,14 @@ let UsersService = class UsersService {
             throw new common_1.NotFoundException('User not found');
         }
         const templateDir = (0, path_1.resolve)(__dirname, '..', 'mail', 'templates', 'forgot_password.hbs');
+        const token = await this.userTokenService.create(user.id);
         await this.mailService.sendMail({
             subject: 'Esqueceu senha',
             templateData: {
                 file: templateDir,
                 variables: {
                     name: user.name,
+                    link: `${process.env.APP_URL}/reset-password/${token.token}`,
                 },
             },
             to: {
@@ -176,7 +180,8 @@ UsersService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
         common_service_1.CommonService,
-        mail_service_1.MailService])
+        mail_service_1.MailService,
+        users_tokens_service_1.UsersTokensService])
 ], UsersService);
 exports.UsersService = UsersService;
 //# sourceMappingURL=users.service.js.map

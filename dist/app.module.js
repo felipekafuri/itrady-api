@@ -18,6 +18,7 @@ const jwt_auth_guard_1 = require("./modules/auth/guards/jwt-auth.guard");
 const users_module_1 = require("./modules/users/users.module");
 const mail_module_1 = require("./modules/mail/mail.module");
 const config_1 = require("@nestjs/config");
+const users_tokens_module_1 = require("./modules/users-tokens/users-tokens.module");
 const app_config_1 = require("./config/app.config");
 let AppModule = class AppModule {
 };
@@ -32,6 +33,7 @@ AppModule = __decorate([
             auth_module_1.AuthModule,
             common_module_1.CommonModule,
             mail_module_1.MailModule,
+            users_tokens_module_1.UsersTokensModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [

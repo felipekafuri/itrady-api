@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { compare, hash } from 'bcrypt';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class CommonService {

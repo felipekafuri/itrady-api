@@ -32,7 +32,7 @@ export class MailService {
     await this.mailerService.sendMail({
       from: {
         name: from?.name || 'Equipe ITrady',
-        address: from?.email || 'suporte@anjoanimal.com',
+        address: from?.email || 'contact@felipekafuri.com',
       },
       to: {
         name: to.name || '',

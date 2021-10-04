@@ -29,7 +29,7 @@ let MailService = class MailService {
         await this.mailerService.sendMail({
             from: {
                 name: (from === null || from === void 0 ? void 0 : from.name) || 'Equipe ITrady',
-                address: (from === null || from === void 0 ? void 0 : from.email) || 'suporte@anjoanimal.com',
+                address: (from === null || from === void 0 ? void 0 : from.email) || 'contact@felipekafuri.com',
             },
             to: {
                 name: to.name || '',

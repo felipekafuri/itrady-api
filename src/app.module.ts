@@ -10,6 +10,7 @@ import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { UsersModule } from './modules/users/users.module';
 import { MailModule } from './modules/mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
+import { UsersTokensModule } from './modules/users-tokens/users-tokens.module';
 import appConfig from './config/app.config';
 
 @Module({
@@ -22,6 +23,7 @@ import appConfig from './config/app.config';
     AuthModule,
     CommonModule,
     MailModule,
+    UsersTokensModule,
   ],
   controllers: [AppController],
   providers: [
