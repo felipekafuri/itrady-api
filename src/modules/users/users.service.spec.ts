@@ -45,6 +45,8 @@ describe('UsersService', () => {
       username: 'pathaj',
       avatar: 'user.png',
     });
+
+    console.log(user);
     expect(user).toHaveProperty('id');
   });
 });

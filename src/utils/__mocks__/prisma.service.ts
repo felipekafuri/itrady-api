@@ -1,6 +1,4 @@
 import { User, UserToken } from '@prisma/client';
-import { Decimal } from '@prisma/client/runtime';
-import * as bcrypt from 'bcrypt';
 
 export const user: User = {
   id: '2875907e-32ec-4662-8184-2e20ff5aa3ed',

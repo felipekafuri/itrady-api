@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import ISendMailDTO from './dtos/ISendMailDTO';
-import nodemailer from 'nodemailer';
 import IParseMailTemplateDTO from './dtos/IParseMailTemplateDTO';
 import * as fs from 'fs';
 import handlebars from 'handlebars';
@@ -32,7 +31,7 @@ export class MailService {
     await this.mailerService.sendMail({
       from: {
         name: from?.name || 'Equipe ITrady',
-        address: from?.email || 'contact@felipekafuri.com',
+        address: from?.email || 'nao-responda@anjoanimal.com',
       },
       to: {
         name: to.name || '',

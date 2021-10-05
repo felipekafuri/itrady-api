@@ -1,1 +1,0 @@
-{"version":3,"file":"configurations.js","sourceRoot":"","sources":["../../../../src/modules/mail/config/configurations.ts"],"names":[],"mappings":";;AAAA,kBAAe,GAAG,EAAE,CAAC,CAAC;IACpB,IAAI,EAAE,GAAG;IACT,IAAI,EAAE,OAAO,CAAC,GAAG,CAAC,aAAa;IAC/B,QAAQ,EAAE,OAAO,CAAC,GAAG,CAAC,iBAAiB;IACvC,SAAS,EAAE,OAAO,CAAC,GAAG,CAAC,iBAAiB;CACzC,CAAC,CAAC"}

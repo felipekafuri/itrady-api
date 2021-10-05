@@ -220,7 +220,7 @@ export class UsersService {
     const templateDir = resolve(
       __dirname,
       '..',
-      'mail',
+      '..',
       'templates',
       'forgot_password.hbs',
     );

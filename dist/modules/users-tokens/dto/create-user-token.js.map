@@ -1,1 +1,0 @@
-{"version":3,"file":"create-user-token.js","sourceRoot":"","sources":["../../../../src/modules/users-tokens/dto/create-user-token.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qDAAyD;AACzD,qDAAkD;AAElD,MAAa,kBAAmB,SAAQ,qBAAS;CAShD;AAPC;IADC,IAAA,0BAAQ,GAAE;;kDACI;AAGf;IADC,IAAA,8BAAY,GAAE;;mDACQ;AAGvB;IADC,IAAA,8BAAY,GAAE;;sDACW;AAR5B,gDASC"}
