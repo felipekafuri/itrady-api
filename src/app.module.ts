@@ -11,7 +11,7 @@ import { UsersModule } from './modules/users/users.module';
 import { MailModule } from './modules/mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 import appConfig from './config/app.config';
-import { UsersTokensModule } from './modules/users-tokens/entities/users-tokens.module';
+import { UsersTokensModule } from './modules/users-tokens/users-tokens.module';
 
 @Module({
   imports: [

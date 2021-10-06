@@ -9,6 +9,7 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 
 import { CreateUserDto } from './dto/create-user.dto';
@@ -19,6 +20,12 @@ import { UsersTokensService } from '../users-tokens/users-tokens.service';
 interface UserRecommendation {
   recommended_user_id: string;
   user_id: string;
+}
+
+interface ResetPasswordData {
+  password_confirmation: string;
+  new_password: string;
+  token: string;
 }
 
 @Injectable()
@@ -221,6 +228,7 @@ export class UsersService {
       __dirname,
       '..',
       '..',
+      '..',
       'templates',
       'forgot_password.hbs',
     );
@@ -241,5 +249,39 @@ export class UsersService {
         email,
       },
     });
+  }
+
+  async resetPassword({
+    new_password,
+    password_confirmation,
+    token,
+  }: ResetPasswordData) {
+    const findToken = await this.userTokenService.findOne(token);
+
+    if (!findToken) {
+      throw new NotFoundException('Token was not found.');
+    }
+
+    const isTokenExpired = await this.commonService.isTokenExpired(
+      findToken.expires,
+    );
+
+    if (isTokenExpired) {
+      throw new UnauthorizedException('Token was expired.');
+    }
+
+    if (new_password !== password_confirmation) {
+      throw new BadRequestException('Passwords do not match.');
+    }
+
+    const newHashedPassword = await this.commonService.hashPassword(
+      new_password,
+    );
+
+    const updatedUser = await this.update(findToken.userId, {
+      password: newHashedPassword,
+    });
+
+    return updatedUser;
   }
 }

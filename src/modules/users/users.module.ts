@@ -3,7 +3,7 @@ import { CommonModule } from '../../common/common.module';
 
 import { PrismaService } from '../../database/prisma/prisma.service';
 import { MailModule } from '../mail/mail.module';
-import { UsersTokensModule } from '../users-tokens/entities/users-tokens.module';
+import { UsersTokensModule } from '../users-tokens/users-tokens.module';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 

@@ -90,4 +90,16 @@ export class UsersController {
   forgotPassword(@Body() body: { email: string }) {
     return this.usersService.forgotPassword(body.email);
   }
+
+  @Public()
+  @Post('/reset-password/:token')
+  resetPassword(@Body() body, @Param('token') token) {
+    const { new_password, password_confirmation } = body;
+
+    return this.usersService.resetPassword({
+      new_password,
+      password_confirmation,
+      token,
+    });
+  }
 }

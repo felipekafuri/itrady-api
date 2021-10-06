@@ -34,7 +34,7 @@ model UserToken {
   id         String   @id @default(uuid())
   userId     String
   user       User     @relation(fields: [userId], references: [id])
-  token      String   @default(uuid())
+  token      String   @default(uuid()) @unique()
   expires    DateTime
   created_at DateTime
 }

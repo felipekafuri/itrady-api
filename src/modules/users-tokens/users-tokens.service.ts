@@ -15,4 +15,12 @@ export class UsersTokensService {
 
     return await this.prismaService.userToken.create({ data: token });
   }
+
+  async findOne(token: string) {
+    const user = await this.prismaService.userToken.findUnique({
+      where: { token },
+    });
+
+    return user;
+  }
 }
