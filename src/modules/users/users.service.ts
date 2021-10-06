@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 
-import { CommonService } from 'src/common/common.service';
-import { PrismaService } from 'src/database/prisma/prisma.service';
+import { CommonService } from '../../common/common.service';
+import { PrismaService } from '../../database/prisma/prisma.service';
 import * as fs from 'fs';
 
 import {
@@ -15,10 +15,17 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MailService } from '../mail/mail.service';
+import { UsersTokensService } from '../users-tokens/users-tokens.service';
 
 interface UserRecommendation {
   recommended_user_id: string;
   user_id: string;
+}
+
+interface ResetPasswordData {
+  password_confirmation: string;
+  new_password: string;
+  token: string;
 }
 
 @Injectable()
@@ -27,6 +34,7 @@ export class UsersService {
     private readonly prismaService: PrismaService,
     private readonly commonService: CommonService,
     private readonly mailService: MailService,
+    private readonly userTokenService: UsersTokensService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -219,10 +227,13 @@ export class UsersService {
     const templateDir = resolve(
       __dirname,
       '..',
-      'mail',
+      '..',
+      '..',
       'templates',
       'forgot_password.hbs',
     );
+
+    const token = await this.userTokenService.create(user.id);
 
     await this.mailService.sendMail({
       subject: 'Esqueceu senha',
@@ -230,6 +241,7 @@ export class UsersService {
         file: templateDir,
         variables: {
           name: user.name,
+          link: `${process.env.APP_URL}/reset-password/${token.token}`,
         },
       },
       to: {
@@ -237,5 +249,39 @@ export class UsersService {
         email,
       },
     });
+  }
+
+  async resetPassword({
+    new_password,
+    password_confirmation,
+    token,
+  }: ResetPasswordData) {
+    const findToken = await this.userTokenService.findOne(token);
+
+    if (!findToken) {
+      throw new NotFoundException('Token was not found.');
+    }
+
+    const isTokenExpired = await this.commonService.isTokenExpired(
+      findToken.expires,
+    );
+
+    if (isTokenExpired) {
+      throw new UnauthorizedException('Token was expired.');
+    }
+
+    if (new_password !== password_confirmation) {
+      throw new BadRequestException('Passwords do not match.');
+    }
+
+    const newHashedPassword = await this.commonService.hashPassword(
+      new_password,
+    );
+
+    const updatedUser = await this.update(findToken.userId, {
+      password: newHashedPassword,
+    });
+
+    return updatedUser;
   }
 }

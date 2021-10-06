@@ -11,25 +11,28 @@ import { UsersModule } from './modules/users/users.module';
 import { MailModule } from './modules/mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 import appConfig from './config/app.config';
+import { UsersTokensModule } from './modules/users-tokens/users-tokens.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env.development'],
+      envFilePath: ['.env'],
       load: [appConfig],
     }),
     UsersModule,
     AuthModule,
     CommonModule,
     MailModule,
+    UsersTokensModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,
+      useExisting: JwtAuthGuard,
     },
+    JwtAuthGuard,
     CommonService,
   ],
 })

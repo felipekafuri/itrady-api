@@ -18,7 +18,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "pretest:e2e": "docker-compose up -d test-db",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "posttest:e2e": "docker-compose stop test-db && docker-compose rm -f test-db"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.6.0",
@@ -33,12 +35,15 @@
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
+    "date-fns": "^2.25.0",
     "handlebars": "^4.7.7",
+    "jest-mock-extended": "^2.0.4",
     "multer": "^1.4.3",
     "nodemailer": "^6.6.5",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
@@ -55,6 +60,7 @@
     "@types/nodemailer": "^6.4.4",
     "@types/passport-jwt": "^3.0.6",
     "@types/passport-local": "^1.0.34",
+    "@types/pg": "^8.6.1",
     "@types/supertest": "^2.0.11",
     "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
@@ -87,6 +93,6 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "./prisma/prisma-test-environment.ts"
   }
 }
