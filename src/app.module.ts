@@ -16,8 +16,7 @@ import { UsersTokensModule } from './modules/users-tokens/users-tokens.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env'],
-      load: [appConfig],
+      envFilePath: '.env',
     }),
     UsersModule,
     AuthModule,

@@ -6,13 +6,13 @@ import { MailService } from './mail.service';
 @Module({
   imports: [
     MailerModule.forRoot({
-      transport: process.env.AWS_TRANSPORT_URL,
+      transport: process.env.MAIL_TRANSPORT_URL,
       defaults: {
         auth: {
-          user: process.env.AWS_SMTP_USER,
-          pass: process.env.AWS_SMTP_PASSWORD,
+          user: process.env.MAIL_SMTP_USER,
+          pass: process.env.MAIL_SMTP_PASSWORD,
         },
-        port: 465,
+        port: Number(process.env.MAIL_SMTP_PORT),
         secure: true,
       },
       template: {

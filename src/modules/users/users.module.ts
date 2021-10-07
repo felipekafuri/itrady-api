@@ -6,7 +6,6 @@ import { MailModule } from '../mail/mail.module';
 import { UsersTokensModule } from '../users-tokens/users-tokens.module';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-
 @Module({
   imports: [CommonModule, MailModule, UsersTokensModule],
   controllers: [UsersController],
