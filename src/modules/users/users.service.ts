@@ -16,6 +16,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MailService } from '../mail/mail.service';
 import { UsersTokensService } from '../users-tokens/users-tokens.service';
+import { deleteFile } from 'src/utils/file';
+import { UploadFileService } from '../upload-file/upload-file.service';
 
 interface UserRecommendation {
   recommended_user_id: string;
@@ -35,6 +37,7 @@ export class UsersService {
     private readonly commonService: CommonService,
     private readonly mailService: MailService,
     private readonly userTokenService: UsersTokensService,
+    private readonly uploadFileService: UploadFileService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -117,19 +120,17 @@ export class UsersService {
   async updateAvatar(id: string, avatar: string) {
     const user = await this.findOne(id);
 
-    if (user.avatar !== '') {
-      const filePath = resolve(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        'tmp',
-        `user/${user.avatar}`,
+    if (user.avatar) {
+      await this.uploadFileService.deleteFile(
+        user.avatar,
+        process.env.AWS_USER_BUCKET,
       );
-      try {
-        await fs.promises.unlink(filePath);
-      } catch {}
     }
+
+    await this.uploadFileService.uploadFile(
+      avatar,
+      process.env.AWS_USER_BUCKET,
+    );
 
     const updatedUser = await this.prismaService.user.update({
       where: { id: user.id },
