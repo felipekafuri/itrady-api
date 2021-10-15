@@ -14,6 +14,7 @@ import appConfig from './config/app.config';
 import { UsersTokensModule } from './modules/users-tokens/users-tokens.module';
 import { UploadFileService } from './modules/upload-file/upload-file.service';
 import { UploadFileModule } from './modules/upload-file/upload-file.module';
+import { ItemsModule } from './modules/items/items.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UploadFileModule } from './modules/upload-file/upload-file.module';
     MailModule,
     UsersTokensModule,
     UploadFileModule,
+    ItemsModule,
   ],
   controllers: [AppController],
   providers: [

@@ -20,6 +20,8 @@ model User {
   phone_number    String
   recommendations Int         @default(0)
   UserToken       UserToken[]
+  Items           Items[]
+  created_at      DateTime @default(now())
 }
 
 model Event {
@@ -34,7 +36,26 @@ model UserToken {
   id         String   @id @default(uuid())
   userId     String
   user       User     @relation(fields: [userId], references: [id])
-  token      String   @default(uuid()) @unique()
+  token      String   @unique @default(uuid())
   expires    DateTime
   created_at DateTime
+}
+
+model Items {
+  id          String        @id @default(uuid())
+  title       String
+  description String
+  thumbnail   String
+  purpose     String
+  owner_id    String
+  user        User          @relation(fields: [owner_id], references: [id])
+  ItemsImages ItemsImages[]
+  created_at  DateTime
+  updated_at  DateTime
+}
+
+model ItemsImages {
+  id       String @id @default(uuid())
+  image_id String
+  items    Items  @relation(fields: [image_id], references: [id])
 }
