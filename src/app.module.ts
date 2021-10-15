@@ -12,6 +12,8 @@ import { MailModule } from './modules/mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 import appConfig from './config/app.config';
 import { UsersTokensModule } from './modules/users-tokens/users-tokens.module';
+import { UploadFileService } from './modules/upload-file/upload-file.service';
+import { UploadFileModule } from './modules/upload-file/upload-file.module';
 
 @Module({
   imports: [
@@ -23,6 +25,7 @@ import { UsersTokensModule } from './modules/users-tokens/users-tokens.module';
     CommonModule,
     MailModule,
     UsersTokensModule,
+    UploadFileModule,
   ],
   controllers: [AppController],
   providers: [
@@ -33,6 +36,7 @@ import { UsersTokensModule } from './modules/users-tokens/users-tokens.module';
     },
     JwtAuthGuard,
     CommonService,
+    UploadFileService,
   ],
 })
 export class AppModule {}

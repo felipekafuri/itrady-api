@@ -43,7 +43,6 @@ export class UsersController {
         destination: resolve(__dirname, '..', '..', '..', 'tmp', 'user'),
         filename: (request, file, callback) => {
           const fileName = `${v4()}-${file.originalname}`;
-
           return callback(null, fileName);
         },
       }),
