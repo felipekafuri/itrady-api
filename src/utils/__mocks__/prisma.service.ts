@@ -9,6 +9,7 @@ export const user: User = {
   name: 'User Name',
   phone_number: '99999999',
   recommendations: 0,
+  created_at: new Date(),
 };
 
 export const userToken: UserToken = {
