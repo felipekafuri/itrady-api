@@ -40,7 +40,7 @@ export class UsersController {
   @UseInterceptors(
     FileInterceptor('avatar', {
       storage: diskStorage({
-        destination: resolve(__dirname, '..', '..', '..', 'tmp', 'user'),
+        destination: resolve(__dirname, '..', '..', '..', 'tmp'),
         filename: (request, file, callback) => {
           const fileName = `${v4()}-${file.originalname}`;
           return callback(null, fileName);

@@ -6,17 +6,38 @@ import {
   Patch,
   Param,
   Delete,
+  Request,
+  UseInterceptors,
+  Query,
 } from '@nestjs/common';
 import { ItemsService } from './items.service';
-import { CreateItemDto } from './dto/create-item.dto';
+import { CreateItemDto, PurposeTypes } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { v4 } from 'uuid';
+import { resolve } from 'path';
 
 @Controller('items')
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
   @Post()
-  create(@Body() createItemDto: CreateItemDto) {
+  @UseInterceptors(
+    FileInterceptor('thumbnail', {
+      storage: diskStorage({
+        destination: resolve(__dirname, '..', '..', '..', 'tmp'),
+        filename: (request, file, callback) => {
+          const fileName = `${v4()}-${file.originalname}`;
+          return callback(null, fileName);
+        },
+      }),
+    }),
+  )
+  create(@Body() createItemDto: CreateItemDto, @Request() req) {
+    createItemDto.owner_id = req.user.userId;
+    createItemDto.thumbnail = req.file.filename;
+
     return this.itemsService.create(createItemDto);
   }
 
@@ -27,7 +48,13 @@ export class ItemsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.itemsService.findOne(+id);
+    return this.itemsService.findOne(id);
+  }
+
+  @Get('/purpose/search')
+  findByPurpose(@Query() query: { purpose: PurposeTypes }) {
+    const { purpose } = query;
+    return this.itemsService.findByPurpose(purpose);
   }
 
   @Patch(':id')
@@ -37,6 +64,7 @@ export class ItemsController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.itemsService.remove(+id);
+    this.itemsService.remove(id);
+    return;
   }
 }

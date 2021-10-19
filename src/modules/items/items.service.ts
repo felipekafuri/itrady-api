@@ -1,26 +1,72 @@
-import { Injectable } from '@nestjs/common';
-import { CreateItemDto } from './dto/create-item.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'src/database/prisma/prisma.service';
+import { UploadFileService } from '../upload-file/upload-file.service';
+import { CreateItemDto, PurposeTypes } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 
 @Injectable()
 export class ItemsService {
-  create(createItemDto: CreateItemDto) {
-    return 'This action adds a new item';
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly uploadFileService: UploadFileService,
+  ) {}
+
+  async create(createItemDto: CreateItemDto) {
+    const item = await this.prismaService.item.create({
+      data: {
+        ...createItemDto,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+    });
+
+    await this.uploadFileService.uploadFile(
+      createItemDto.thumbnail,
+      process.env.AWS_USER_BUCKET,
+    );
+
+    return item;
   }
 
-  findAll() {
-    return `This action returns all items`;
+  async findAll() {
+    return this.prismaService.item.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} item`;
+  async findOne(id: string) {
+    const item = await this.prismaService.item.findUnique({ where: { id } });
+
+    if (!item) {
+      throw new NotFoundException('Item was not found');
+    }
+
+    return item;
+  }
+
+  async findByPurpose(purpose: PurposeTypes) {
+    const item = await this.prismaService.$queryRaw`
+      SELECT * FROM "Item" WHERE purpose = ${purpose}
+    `;
+
+    if (!item) {
+      throw new NotFoundException('Item was not found');
+    }
+
+    return item;
   }
 
   update(id: number, updateItemDto: UpdateItemDto) {
     return `This action updates a #${id} item`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} item`;
+  async remove(id: string) {
+    const item = await this.findOne(id);
+
+    await this.uploadFileService.deleteFile(
+      item.thumbnail,
+      process.env.AWS_USER_BUCKET,
+    );
+
+    this.prismaService.item.delete({ where: { id } });
+    return;
   }
 }

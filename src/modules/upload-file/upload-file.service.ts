@@ -13,15 +13,7 @@ const s3 = new AWS.S3({
 export class UploadFileService {
   async uploadFile(file: any, bucket: string) {
     const { originalname: name, size, location: url } = file;
-    const originalPath = path.resolve(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      'tmp',
-      'user',
-      file,
-    );
+    const originalPath = path.resolve(__dirname, '..', '..', '..', 'tmp', file);
     const id = v4();
     const fileContent = await fs.promises.readFile(originalPath);
 

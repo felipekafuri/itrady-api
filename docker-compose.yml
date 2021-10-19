@@ -4,10 +4,13 @@ services:
     container_name: itrady-postgresql
     image: postgres
     restart: always
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: itrady
+
   test-db:
     image: postgres
     restart: always

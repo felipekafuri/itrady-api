@@ -11,5 +11,5 @@ export class User implements Prisma.UserUncheckedCreateInput {
   recommendations?: number;
   created_at?: string | Date;
   UserToken?: Prisma.UserTokenUncheckedCreateNestedManyWithoutUserInput;
-  Items?: Prisma.ItemsUncheckedCreateNestedManyWithoutUserInput;
+  Items?: Prisma.ItemUncheckedCreateNestedManyWithoutUserInput;
 }
