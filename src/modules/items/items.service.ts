@@ -44,7 +44,7 @@ export class ItemsService {
 
   async findByPurpose(purpose: PurposeTypes) {
     const item = await this.prismaService.$queryRaw`
-      SELECT * FROM "Item" WHERE purpose = ${purpose}
+      SELECT * FROM "items" WHERE purpose = ${purpose}
     `;
 
     if (!item) {

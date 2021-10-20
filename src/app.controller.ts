@@ -23,4 +23,10 @@ export class AppController {
   async login(@Request() req) {
     return this.authService.login(req.user);
   }
+
+  @Public()
+  @Post('/users/login/refresh')
+  async refreshToken(@Request() req) {
+    return this.authService.refreshUserToken(req.body.refreshToken);
+  }
 }
