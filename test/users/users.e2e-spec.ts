@@ -5,10 +5,10 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from '../../src/database/prisma/prisma.service';
 import { UsersModule } from '../../src/modules/users/users.module';
 import * as request from 'supertest';
-import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
+import { CreateUserDto } from '../../src/modules/users/dto/create-user.dto';
+import { PrismaService } from '../../src/database/prisma/prisma.service';
 
 describe('[Feature] Users - /users', () => {
   const user: CreateUserDto = {
@@ -20,7 +20,6 @@ describe('[Feature] Users - /users', () => {
   };
   let app: INestApplication;
   let httpServer: HttpServer;
-
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [UsersModule, PrismaService],
@@ -37,6 +36,7 @@ describe('[Feature] Users - /users', () => {
         },
       }),
     );
+
     await app.init();
     httpServer = app.getHttpServer();
   });
