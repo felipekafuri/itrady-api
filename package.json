@@ -94,6 +94,6 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "./prisma/prisma-test-environment.ts"
+    "testEnvironment": "./prisma/prisma-test-environment.js"
   }
 }

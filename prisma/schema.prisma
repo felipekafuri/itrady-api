@@ -20,7 +20,7 @@ model User {
   phone_number    String
   recommendations Int         @default(0)
   UserToken       UserToken[]
-  Items           Items[]
+  Items           Item[]
   created_at      DateTime @default(now())
 }
 
@@ -41,7 +41,7 @@ model UserToken {
   created_at DateTime
 }
 
-model Items {
+model Item {
   id          String        @id @default(uuid())
   title       String
   description String
@@ -49,13 +49,6 @@ model Items {
   purpose     String
   owner_id    String
   user        User          @relation(fields: [owner_id], references: [id])
-  ItemsImages ItemsImages[]
   created_at  DateTime
   updated_at  DateTime
-}
-
-model ItemsImages {
-  id       String @id @default(uuid())
-  image_id String
-  items    Items  @relation(fields: [image_id], references: [id])
 }
