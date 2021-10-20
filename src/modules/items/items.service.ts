@@ -54,8 +54,27 @@ export class ItemsService {
     return item;
   }
 
-  update(id: number, updateItemDto: UpdateItemDto) {
-    return `This action updates a #${id} item`;
+  async update(id: string, updateItemDto: UpdateItemDto) {
+    const item = await this.findOne(id);
+
+    if (updateItemDto.thumbnail) {
+      await this.uploadFileService.deleteFile(
+        item.thumbnail,
+        process.env.AWS_USER_BUCKET,
+      );
+
+      await this.uploadFileService.uploadFile(
+        updateItemDto.thumbnail,
+        process.env.AWS_USER_BUCKET,
+      );
+    }
+
+    const updatedItem = await this.prismaService.item.update({
+      where: { id },
+      data: updateItemDto,
+    });
+
+    return updatedItem;
   }
 
   async remove(id: string) {
